@@ -36,6 +36,10 @@ const TwitterLogo = () => (
     </svg>
 );
 
+const PurdueLogo = () => (
+    <img src="/purdue.png" alt="Purdue" style={{ width: '22px', height: '22px' }} />
+);
+
 const Tile = ({ targetChar, waitingChar, shouldReveal, isRevealed, color }) => {
     const [displayChar, setDisplayChar] = useState(waitingChar || "");
 
@@ -58,12 +62,12 @@ const Tile = ({ targetChar, waitingChar, shouldReveal, isRevealed, color }) => {
 
     const renderContent = () => {
         if (displayChar === "~") return <TwitterLogo />;
+        if (displayChar === "#") return <PurdueLogo />;
         if (displayChar === "^") return "👋";
         if (displayChar === "+") return "✨";
         if (displayChar === "%") return "💻";
         if (displayChar === "$") return "🗽";
         if (displayChar === "@") return "🚀";
-        if (displayChar === "#") return "🚂";
         if (displayChar === "&") return "🎓";
         return displayChar;
     };
@@ -92,14 +96,17 @@ export default function App() {
             for (let c = 0; c < COLS; c++) {
                 const targetData = getCellData(screenIndex, r, c);
                 const targetChar = targetData ? targetData.char : null;
+                const targetColor = targetData ? getStyle(screenIndex, targetData.lineIndex, targetData.charIndex) : null;
 
                 const waitingData = prevScreenIndex >= 0 ? getCellData(prevScreenIndex, r, c) : null;
                 const waitingChar = waitingData ? waitingData.char : null;
+                const waitingColor = waitingData ? getStyle(prevScreenIndex, waitingData.lineIndex, waitingData.charIndex) : null;
 
                 // If this tile has content now OR had content before, it must animate
                 // Only if the content is DIFFERENT (e.g. appearing, disappearing, or changing letter)
-                // If it's the exact same letter in same spot, or both are null, don't flip.
-                if (targetChar !== waitingChar) {
+                // OR if the COLOR is different (e.g. same letter but changing style).
+                // If it's the exact same letter AND color in same spot, don't flip.
+                if (targetChar !== waitingChar || targetColor !== waitingColor) {
                     seq.push({ r, c });
                 }
             }
@@ -166,34 +173,19 @@ export default function App() {
                 }
 
                 // Determine which color to show
-                // If revealed, we show the target color.
-                // If waiting OR revealing (shuffling), we keep the waiting color (previous screen's style)
-                // so the old text dissolves in its own color before snapping to the new one.
-                // Exception: If there was NO waiting color (black), but there IS a target color?
-                // Then shuffling should probably be in Target color (appearing).
-                //
-                // Case 1: Blue -> Black (Twitter -> Master)
-                // We want Blue while shuffling, then Black.
-                //
-                // Case 2: Black -> Blue (Intro -> Google)
-                // We want Blue while shuffling (appearing), then Blue.
-                //
-                // Hybrid logic:
-                // If target takes precedence (it has color), use target during shuffle?
-                // If waiting takes precedence (it has color), use waiting during shuffle?
-
                 let displayColor;
                 if (isRevealed) {
+                    // Only show target color when the char is actually locked in
                     displayColor = targetColor;
                 } else if (shouldReveal) {
                     // During animation/shuffle
-                    // If we are coming FROM a colored text, keep that color during shuffle.
-                    // If we are going TO a colored text (from black), use the new color during shuffle.
-                    // If both, maybe prefer the "departing" color?
+                    // If we are coming FROM a colored text, keep that color during shuffle (dissolving).
+                    // If we are coming from Black (null), keep it Black during shuffle (neutral noise).
+                    // We DO NOT show the new color yet, to avoid "color before text".
                     if (waitingColor) {
                         displayColor = waitingColor;
                     } else {
-                        displayColor = targetColor;
+                        displayColor = null; // Default/Black
                     }
                 } else {
                     // Waiting

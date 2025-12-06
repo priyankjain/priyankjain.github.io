@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+
 :root {
-    font-family: 'Roboto Mono', monospace;
+    font-family: 'Space Mono', monospace;
     --bg: #f0f0f0;
     --board-bg: #e0e0e0;
     --tile-bg: #f8f8f8;
