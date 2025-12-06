@@ -1,9 +1,8 @@
 :root {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: 'Roboto Mono', monospace;
     --bg: #f0f0f0;
     --board-bg: #e0e0e0;
-    --tile-bg: #fff;
-    --tile-border: #bbb;
+    --tile-bg: #f8f8f8;
     --text: #000;
 }
 
@@ -22,7 +21,7 @@ body {
 .board-container {
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 8px;
     /* Vertical gap between rows */
     padding: 16px;
     background: var(--board-bg);
@@ -39,11 +38,11 @@ body {
 .tile {
     width: 26px;
     height: 42px;
-    background-color: transparent;
-    border: 1px solid var(--tile-border);
+    background-color: var(--tile-bg);
     border-radius: 2px;
-    /* Remove shadow for outline mode or keep subtle? */
-    /* box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15); */
+    box-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -52,15 +51,6 @@ body {
     position: relative;
     color: #222;
     overflow: hidden;
-    box-sizing: border-box;
-}
-
-.tile.filled {
-    background-color: var(--tile-bg);
-    border: none;
-    box-shadow:
-        0 1px 2px rgba(0, 0, 0, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 /* The "split" line in the middle - only for filled? 
@@ -94,10 +84,7 @@ body {
 .tile.active {
     /* Active cycling state */
     color: #444;
-    background-color: var(--tile-bg);
-    /* Flash to solid when flipping */
-    border: none;
-    animation: flipX 0.08s infinite;
+    animation: flipX 0.06s infinite;
 }
 
 @keyframes flipX {

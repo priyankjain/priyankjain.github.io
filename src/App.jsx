@@ -2,35 +2,41 @@ import React, { useState, useEffect, useMemo } from "react";
 import "./styles.css";
 
 const ROWS = 4;
-const COLS = 29;
+const COLS = 27;
 const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!'";
 
 const SCREENS = [
     [
-        "HI, STRANGER!"
+        "HI, STRANGER! ^"
     ],
     [
         "I'M, PRIYANK JAIN",
-        "WELCOME!"
+        "WELCOME! +"
     ],
     [
-        "I AM A SENIOR SOFTWARE",
-        "ENGINEER AT GOOGLE",
-        "IN NEW YORK CITY"
+        "I AM A SOFTWARE",
+        "ENGINEER % AT GOOGLE",
+        "IN NEW YORK CITY $"
     ],
     [
         "PREVIOUSLY, I WORKED AT",
-        "TWITTER UNTIL",
-        "MUSK ACQUIRED IT"
+        "TWITTER ~ UNTIL",
+        "MUSK @ ACQUIRED IT"
     ],
     [
         "I GOT MY MASTERS IN",
-        "COMPUTER SCIENCE",
-        "FROM PURDUE UNIVERSITY"
+        "COMPUTER SCIENCE &",
+        "FROM PURDUE UNIVERSITY #"
     ]
 ];
 
-const Tile = ({ targetChar, waitingChar, shouldReveal, isRevealed }) => {
+const TwitterLogo = () => (
+    <svg viewBox="0 0 24 24" fill="currentColor" style={{ width: '18px', height: '18px' }}>
+        <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.84 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
+    </svg>
+);
+
+const Tile = ({ targetChar, waitingChar, shouldReveal, isRevealed, color }) => {
     const [displayChar, setDisplayChar] = useState(waitingChar || "");
 
     useEffect(() => {
@@ -42,7 +48,7 @@ const Tile = ({ targetChar, waitingChar, shouldReveal, isRevealed }) => {
         if (shouldReveal) {
             const interval = setInterval(() => {
                 setDisplayChar(CHARS[Math.floor(Math.random() * CHARS.length)]);
-            }, 33); // Slower animation speed
+            }, 30);
             return () => clearInterval(interval);
         }
 
@@ -50,11 +56,24 @@ const Tile = ({ targetChar, waitingChar, shouldReveal, isRevealed }) => {
         setDisplayChar(waitingChar || "");
     }, [targetChar, waitingChar, shouldReveal, isRevealed]);
 
-    const isFilled = displayChar !== "";
+    const renderContent = () => {
+        if (displayChar === "~") return <TwitterLogo />;
+        if (displayChar === "^") return "👋";
+        if (displayChar === "+") return "✨";
+        if (displayChar === "%") return "💻";
+        if (displayChar === "$") return "🗽";
+        if (displayChar === "@") return "🚀";
+        if (displayChar === "#") return "🚂";
+        if (displayChar === "&") return "🎓";
+        return displayChar;
+    };
 
     return (
-        <div className={`tile ${shouldReveal ? "active" : ""} ${isFilled ? "filled" : ""}`}>
-            {displayChar}
+        <div
+            className={`tile ${shouldReveal ? "active" : ""}`}
+            style={{ color: color || '#222' }}
+        >
+            {renderContent()}
         </div>
     );
 };
@@ -62,36 +81,33 @@ const Tile = ({ targetChar, waitingChar, shouldReveal, isRevealed }) => {
 export default function App() {
     const [screenIndex, setScreenIndex] = useState(0);
     const [revealIndex, setRevealIndex] = useState(0);
-    // phase: 'reading' | 'wiping' | 'clearing'
-    const [phase, setPhase] = useState("wiping");
 
     // Determines the sequence of "active" tiles (r, c) that need animating.
-    // Ordered by Row, then Column.
+    // Ordered by Row, then Column (Line by Line).
     const animationSequence = useMemo(() => {
         const seq = [];
-        // In "clearing" phase, we are flipping from Text (screenIndex) -> Blank.
-        // In "wiping" phase, we are flipping from Blank (or prev clearing?) -> Text (screenIndex).
-        // Actually, let's simplify:
-        // When wiping: target = SCREENS[idx]. waiting = null (assumed cleared).
-        // When clearing: target = null. waiting = SCREENS[idx].
-
-        // Both phases share the logic: "If target OR waiting has char, push to sequence".
-        // The difference is what getChar returns.
+        const prevScreenIndex = screenIndex - 1;
 
         for (let r = 0; r < ROWS; r++) {
             for (let c = 0; c < COLS; c++) {
-                const targetChar = getChar(screenIndex, r, c, phase);
-                const waitingChar = getWaitingChar(screenIndex, r, c, phase);
+                const targetData = getCellData(screenIndex, r, c);
+                const targetChar = targetData ? targetData.char : null;
 
-                if (targetChar || waitingChar) {
+                const waitingData = prevScreenIndex >= 0 ? getCellData(prevScreenIndex, r, c) : null;
+                const waitingChar = waitingData ? waitingData.char : null;
+
+                // If this tile has content now OR had content before, it must animate
+                // Only if the content is DIFFERENT (e.g. appearing, disappearing, or changing letter)
+                // If it's the exact same letter in same spot, or both are null, don't flip.
+                if (targetChar !== waitingChar) {
                     seq.push({ r, c });
                 }
             }
         }
         return seq;
-    }, [screenIndex, phase]);
+    }, [screenIndex]);
 
-    // Map for O(1) lookup
+    // Map for O(1) lookup: "r-c" -> sequenceIndex
     const sequenceMap = useMemo(() => {
         const map = new Map();
         animationSequence.forEach((pos, index) => {
@@ -101,63 +117,87 @@ export default function App() {
     }, [animationSequence]);
 
     useEffect(() => {
+        // Check if we've revealed all items in the sequence
         const maxIndex = animationSequence.length;
 
-        // If wiped/revealed everything
-        if (revealIndex >= maxIndex + 15) { // buffer
-            if (phase === "wiping") {
-                // Done wiping in. Go to reading.
-                setPhase("reading");
-                setRevealIndex(0);
-                return;
-            }
-            if (phase === "clearing") {
-                // Done clearing. Go to next screen (if avail) and start wiping.
-                if (screenIndex < SCREENS.length - 1) {
+        if (revealIndex >= maxIndex + 20) { // +20 buffer for reading time (approx 600ms)
+            if (screenIndex < SCREENS.length - 1) {
+                const timer = setTimeout(() => {
                     setScreenIndex((prev) => prev + 1);
-                    setPhase("wiping");
                     setRevealIndex(0);
-                }
-                return;
+                }, 2000);
+                return () => clearTimeout(timer);
             }
+            return;
         }
 
-        // If reading, wait then start clearing
-        if (phase === "reading") {
-            const timer = setTimeout(() => {
-                if (screenIndex < SCREENS.length - 1) {
-                    setPhase("clearing");
-                    setRevealIndex(0);
-                }
-            }, 2500);
-            return () => clearTimeout(timer);
-        }
-
-        // Animation timer (wiping or clearing)
         const timer = setTimeout(() => {
             setRevealIndex((prev) => prev + 1);
-        }, 36); // Approx screen wipe speed (slower)
+        }, 60); // Slower sequential reveal (60ms per tile) to allow flip duration
 
         return () => clearTimeout(timer);
-    }, [revealIndex, screenIndex, animationSequence.length, phase]);
+    }, [revealIndex, screenIndex, animationSequence.length]);
 
     // Create grid data
     const renderGrid = () => {
         const grid = [];
+        const prevScreenIndex = screenIndex - 1;
+
         for (let r = 0; r < ROWS; r++) {
             const rowTiles = [];
             for (let c = 0; c < COLS; c++) {
-                const targetChar = getChar(screenIndex, r, c, phase);
-                const waitingChar = getWaitingChar(screenIndex, r, c, phase);
+                const targetData = getCellData(screenIndex, r, c);
+                const targetChar = targetData ? targetData.char : null;
+                const targetColor = targetData ? getStyle(screenIndex, targetData.lineIndex, targetData.charIndex) : null;
+
+                const waitingData = prevScreenIndex >= 0 ? getCellData(prevScreenIndex, r, c) : null;
+                const waitingChar = waitingData ? waitingData.char : null;
+                const waitingColor = waitingData ? getStyle(prevScreenIndex, waitingData.lineIndex, waitingData.charIndex) : null;
 
                 const seqIdx = sequenceMap.get(`${r}-${c}`);
 
+                // Default handling if tile is not in the animation sequence (always background)
                 let isRevealed = true;
                 let shouldReveal = false;
 
                 if (seqIdx !== undefined) {
                     isRevealed = seqIdx < revealIndex;
                     shouldReveal = seqIdx === revealIndex;
+                }
+
+                // Determine which color to show
+                // If revealed, we show the target color.
+                // If waiting OR revealing (shuffling), we keep the waiting color (previous screen's style)
+                // so the old text dissolves in its own color before snapping to the new one.
+                // Exception: If there was NO waiting color (black), but there IS a target color?
+                // Then shuffling should probably be in Target color (appearing).
+                //
+                // Case 1: Blue -> Black (Twitter -> Master)
+                // We want Blue while shuffling, then Black.
+                //
+                // Case 2: Black -> Blue (Intro -> Google)
+                // We want Blue while shuffling (appearing), then Blue.
+                //
+                // Hybrid logic:
+                // If target takes precedence (it has color), use target during shuffle?
+                // If waiting takes precedence (it has color), use waiting during shuffle?
+
+                let displayColor;
+                if (isRevealed) {
+                    displayColor = targetColor;
+                } else if (shouldReveal) {
+                    // During animation/shuffle
+                    // If we are coming FROM a colored text, keep that color during shuffle.
+                    // If we are going TO a colored text (from black), use the new color during shuffle.
+                    // If both, maybe prefer the "departing" color?
+                    if (waitingColor) {
+                        displayColor = waitingColor;
+                    } else {
+                        displayColor = targetColor;
+                    }
+                } else {
+                    // Waiting
+                    displayColor = waitingColor;
                 }
 
                 rowTiles.push(
@@ -167,6 +207,7 @@ export default function App() {
                         waitingChar={waitingChar}
                         isRevealed={isRevealed}
                         shouldReveal={shouldReveal}
+                        color={displayColor}
                     />
                 );
             }
@@ -182,36 +223,85 @@ export default function App() {
     );
 }
 
-// Helpers
-function getChar(screenIdx, r, c, phase) {
-    // If we are clearing, target is NULL (blank).
-    if (phase === "clearing") return null;
-
-    // Otherwise (wiping or reading), target is the Text.
+// moved outside to avoid stale closure or strictly passing screenIdx
+function getCellData(screenIdx, r, c) {
     if (screenIdx < 0 || screenIdx >= SCREENS.length) return null;
 
-    // ... Layout logic
     const screenLines = SCREENS[screenIdx];
     const totalLines = screenLines.length;
-    const startRow = Math.floor((ROWS - totalLines) / 2);
+    // User requested reducing top spacing so start at 0
+    const startRow = 0;
 
     if (r >= startRow && r < startRow + totalLines) {
         const lineIndex = r - startRow;
         const line = screenLines[lineIndex];
         const startCol = Math.floor((COLS - line.length) / 2);
         if (c >= startCol && c < startCol + line.length) {
-            return line[c - startCol];
+            return {
+                char: line[c - startCol],
+                lineIndex: lineIndex,
+                charIndex: c - startCol
+            };
         }
     }
     return null;
 }
 
-function getWaitingChar(screenIdx, r, c, phase) {
-    // If we are clearing, waiting char IS the text (so we see it before it flips to blank).
-    if (phase === "clearing") {
-        // Reuse getChar logic but force it to look up the text
-        return getChar(screenIdx, r, c, "reading");
+// Helper to determine color based on screen content
+function getStyle(screenIdx, lineIdx, charIdx) {
+    // Screen 0: Hi Stranger
+    if (screenIdx === 0 && lineIdx === 0) {
+        // "HI, STRANGER! ^"
+        if (charIdx >= 4 && charIdx <= 12) return '#E91E63'; // Stranger - Pink
     }
-    // If wiping, waiting char is NULL (because we assumed we cleared before).
+
+    // Screen 1: Priyank Jain / Welcome
+    if (screenIdx === 1) {
+        if (lineIdx === 0 && charIdx >= 5) return '#009688'; // Priyank Jain - Teal
+        if (lineIdx === 1) return '#FFB300'; // Welcome - Amber/Gold
+    }
+
+    // Screen 2: Google
+    if (screenIdx === 2) {
+        // "I AM A SOFTWARE"
+        if (lineIdx === 0) {
+            // "SOFTWARE" starts at 7
+            if (charIdx >= 7) return '#9C27B0'; // Purple
+        }
+        if (lineIdx === 1) {
+            // "ENGINEER % AT GOOGLE"
+            // ENGINEER (0-7)
+            if (charIdx <= 7) return '#673AB7'; // Deep Purple
+
+            // GOOGLE (14-19)
+            // G(14) O(15) O(16) G(17) L(18) E(19)
+            if (charIdx === 14) return '#4285F4';
+            if (charIdx === 15) return '#EA4335';
+            if (charIdx === 16) return '#FBBC05';
+            if (charIdx === 17) return '#4285F4';
+            if (charIdx === 18) return '#34A853';
+            if (charIdx === 19) return '#EA4335';
+        }
+        if (lineIdx === 2) {
+            // "IN NEW YORK CITY $"
+            // NEW YORK CITY (3-15)
+            if (charIdx >= 3 && charIdx <= 15) return '#00BCD4'; // Cyan
+        }
+    }
+
+    // Screen 3: Twitter
+    if (screenIdx === 3 && lineIdx === 1) {
+        // "TWITTER ~ UNTIL"
+        if (charIdx >= 0 && charIdx <= 6) return '#1DA1F2'; // Twitter Blue
+        if (charIdx === 8) return '#1DA1F2'; // Icon
+    }
+
+    // Screen 4: Purdue
+    if (screenIdx === 4 && lineIdx === 2) {
+        // "FROM PURDUE UNIVERSITY"
+        // PURDUE UNIVERSITY (5-21)
+        if (charIdx >= 5) return '#CEB888'; // Purdue Gold (Approx)
+    }
+
     return null;
 }
