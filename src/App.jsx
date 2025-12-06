@@ -75,7 +75,7 @@ const Tile = ({ targetChar, waitingChar, shouldReveal, isRevealed, color }) => {
     return (
         <div
             className={`tile ${shouldReveal ? "active" : ""}`}
-            style={{ color: color || '#222' }}
+            style={{ color: color || 'var(--text)' }}
         >
             {renderContent()}
         </div>
@@ -258,7 +258,7 @@ function getStyle(screenIdx, lineIdx, charIdx) {
         // "I AM A SOFTWARE"
         if (lineIdx === 0) {
             // "SOFTWARE" starts at 7
-            if (charIdx >= 7) return '#9C27B0'; // Purple
+            if (charIdx >= 7) return '#009688'; // Teal (matching Priyank Jain)
         }
         if (lineIdx === 1) {
             // "ENGINEER % AT GOOGLE"
