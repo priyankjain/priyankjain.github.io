@@ -263,7 +263,7 @@ function getStyle(screenIdx, lineIdx, charIdx) {
         if (lineIdx === 1) {
             // "ENGINEER % AT GOOGLE"
             // ENGINEER (0-7)
-            if (charIdx <= 7) return '#673AB7'; // Deep Purple
+            if (charIdx <= 7) return '#009688'; // Teal (matching Priyank Jain)
 
             // GOOGLE (14-19)
             // G(14) O(15) O(16) G(17) L(18) E(19)
