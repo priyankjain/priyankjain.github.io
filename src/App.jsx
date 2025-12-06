@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import "./styles.css";
 
 const ROWS = 4;
-const COLS = 27;
+const COLS = 23;
 const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,!'";
 
 const SCREENS = [
@@ -14,19 +14,22 @@ const SCREENS = [
         "WELCOME! +"
     ],
     [
-        "I AM A SOFTWARE",
-        "ENGINEER % AT GOOGLE",
+        "I AM A",
+        "SOFTWARE ENGINEER %",
+        "AT GOOGLE",
         "IN NEW YORK CITY $"
     ],
     [
-        "PREVIOUSLY, I WORKED AT",
+        "PREVIOUSLY,",
+        "I WORKED AT",
         "TWITTER ~ UNTIL",
         "MUSK @ ACQUIRED IT"
     ],
     [
         "I GOT MY MASTERS IN",
         "COMPUTER SCIENCE &",
-        "FROM PURDUE UNIVERSITY #"
+        "FROM PURDUE",
+        "UNIVERSITY #"
     ]
 ];
 
@@ -255,44 +258,54 @@ function getStyle(screenIdx, lineIdx, charIdx) {
 
     // Screen 2: Google
     if (screenIdx === 2) {
-        // "I AM A SOFTWARE"
-        if (lineIdx === 0) {
-            // "SOFTWARE" starts at 7
-            if (charIdx >= 7) return '#009688'; // Teal (matching Priyank Jain)
-        }
+        // Line 1: "SOFTWARE ENGINEER %"
         if (lineIdx === 1) {
-            // "ENGINEER % AT GOOGLE"
-            // ENGINEER (0-7)
-            if (charIdx <= 7) return '#009688'; // Teal (matching Priyank Jain)
-
-            // GOOGLE (14-19)
-            // G(14) O(15) O(16) G(17) L(18) E(19)
-            if (charIdx === 14) return '#4285F4';
-            if (charIdx === 15) return '#EA4335';
-            if (charIdx === 16) return '#FBBC05';
-            if (charIdx === 17) return '#4285F4';
-            if (charIdx === 18) return '#34A853';
-            if (charIdx === 19) return '#EA4335';
+            // SOFTWARE (0-7)
+            if (charIdx >= 0 && charIdx <= 7) return '#009688'; // Teal
+            // ENGINEER (9-16)
+            if (charIdx >= 9 && charIdx <= 16) return '#009688'; // Teal
         }
+        // Line 2: "AT GOOGLE"
         if (lineIdx === 2) {
-            // "IN NEW YORK CITY $"
+            // GOOGLE (3-8)
+            // G(3) O(4) O(5) G(6) L(7) E(8)
+            if (charIdx === 3) return '#4285F4';
+            if (charIdx === 4) return '#EA4335';
+            if (charIdx === 5) return '#FBBC05';
+            if (charIdx === 6) return '#4285F4';
+            if (charIdx === 7) return '#34A853';
+            if (charIdx === 8) return '#EA4335';
+        }
+        // Line 3: "IN NEW YORK CITY $"
+        if (lineIdx === 3) {
             // NEW YORK CITY (3-15)
             if (charIdx >= 3 && charIdx <= 15) return '#00BCD4'; // Cyan
         }
     }
 
     // Screen 3: Twitter
-    if (screenIdx === 3 && lineIdx === 1) {
-        // "TWITTER ~ UNTIL"
-        if (charIdx >= 0 && charIdx <= 6) return '#1DA1F2'; // Twitter Blue
-        if (charIdx === 8) return '#1DA1F2'; // Icon
+    if (screenIdx === 3) {
+        // Line 2: "TWITTER ~ UNTIL"
+        if (lineIdx === 2) {
+            // TWITTER (0-6)
+            if (charIdx >= 0 && charIdx <= 6) return '#1DA1F2'; // Twitter Blue
+            // Twitter Icon at position 8
+            if (charIdx === 8) return '#1DA1F2'; // Twitter Icon
+        }
     }
 
     // Screen 4: Purdue
-    if (screenIdx === 4 && lineIdx === 2) {
-        // "FROM PURDUE UNIVERSITY"
-        // PURDUE UNIVERSITY (5-21)
-        if (charIdx >= 5) return '#CEB888'; // Purdue Gold (Approx)
+    if (screenIdx === 4) {
+        if (lineIdx === 2) {
+            // "FROM PURDUE"
+            // PURDUE (5-10)
+            if (charIdx >= 5) return '#CEB888'; // Purdue Gold
+        }
+        if (lineIdx === 3) {
+            // "UNIVERSITY #"
+            // UNIVERSITY (0-9)
+            if (charIdx <= 9) return '#CEB888'; // Purdue Gold
+        }
     }
 
     return null;
