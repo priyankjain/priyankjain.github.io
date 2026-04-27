@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 1.4;
+            color: #000;
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .name {
+            font-size: 26pt;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .contact-line {
+            font-size: 9.5pt;
+            margin-bottom: 5px;
+            white-space: nowrap;
+        }
+
+        .contact-line a {
+            color: #000;
+            text-decoration: none;
+        }
+
+        h2 {
+            font-size: 12pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-bottom: 1.5px solid #000;
+            margin-top: 18px;
+            margin-bottom: 8px;
+        }
+
+        .entry {
+            margin-bottom: 10px;
+        }
+
+        .flex-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .company-name {
+            font-size: 11pt;
+            font-weight: bold;
+        }
+
+        .date-range {
+            font-size: 11pt;
+            font-weight: bold;
+        }
+
+        .job-title {
+            font-size: 10.5pt;
+            font-weight: bold;
+            margin-top: 2px;
+            margin-bottom: 4px;
+        }
+
+        .degree-line {
+            font-size: 10.5pt;
+            font-weight: bold;
+        }
+
+        .gpa {
+            font-weight: normal;
+        }
+
+        ul {
+            margin-top: 0;
+            margin-bottom: 8px;
+            padding-left: 22px;
+        }
+
+        li {
+            font-size: 10pt;
+            margin-bottom: 4px;
+            text-align: justify;
+        }
+
+        .skills-row {
+            font-size: 10pt;
+            margin-bottom: 4px;
+        }
+
+        .skills-label {
+            font-weight: bold;
+            display: inline-block;
+            width: 100px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="name">Priyank Jain</div>
+        <div class="contact-line">
+            408 8th Ave, New York, NY, 10001 | +1-765-476-3000 | priyankjjain61@gmail.com |
+            <a href="https://github.com/priyankjain">github.com/priyankjain</a> |
+            <a href="https://linkedin.com/in/priyank-j">linkedin.com/in/priyank-j</a>
+        </div>
+    </div>
+
+    <h2>Work Experience</h2>
+
+    <div class="entry">
+        <div class="flex-row">
+            <span class="company-name">GOOGLE, New York, NY</span>
+            <span class="date-range">Nov 2022 – Present</span>
+        </div>
+        <div class="job-title">Senior Software Engineer / Tech Lead (Ranking & Quality)</div>
+        <ul>
+            <li><b>Architected and implemented</b> a factor-based scoring model for corroboration ranking to enhance
+                factuality and grounding in AI Overviews and AI Mode in Google Search.</li>
+            <li>Successfully <b>plumbed discover catch up rank signals</b> through the Google Search Next stack,
+                enabling the AI Quality team to seamlessly test and deploy new weighting models for information
+                retrieval and catch up scores.</li>
+            <li><b>Unblocked horizontal engineering teams</b> by authoring comprehensive developer documentation and
+                integration guides for fetching/piping new signals into the AI Overviews corroboration flow.</li>
+            <li><b>Led technical design</b> for enhancing ranking unified quality signals, expanding the candidate
+                retrieval funnel from 3 to 10 and integrating weighted country demotion multipliers for global
+                news queries.</li>
+            <li>Led <b>End-to-End (E2E) quality evaluations</b>, developing rigorous Colab analysis frameworks to drive
+                launch decisions for political and general news queries.</li>
+            <li>Deployed <b>Trust and Safety ML algorithms</b> to filter harmful content (pornographic, violent,
+                fringe), ensuring child safety and protecting users from misinformation.</li>
+        </ul>
+    </div>
+
+    <div class="entry">
+        <div class="flex-row">
+            <span class="company-name">TWITTER, New York, NY</span>
+            <span class="date-range">Jan 2018 – Nov 2022</span>
+        </div>
+        <div class="job-title">Senior Machine Learning Engineer (Revenue Science)</div>
+        <ul>
+            <li>Improved relevancy and revenue of <b>Amplify Video Ads</b> using user and contextual signals,
+                contributing over <b>$5 million in incremental annual revenue</b>.</li>
+            <li>Built data pipelines, retrieval systems, and ranking models <b>from inception</b> for <b>Tweet
+                    Conversation Ads</b>, utilizing deep neural networks for recommendation.</li>
+            <li><b>Migrated timelines, push notifications, and search ranking</b> to TensorFlow, decreasing model
+                rollout time to 10 minutes and saving <b>$3.8 million USD</b> amortized over 2 years.</li>
+            <li>Developed a <b>hotswapping system</b> for rapidly switching ML models across all instances without
+                service
+                interruption, enabling faster iteration and flexible configuration.</li>
+            <li>Implemented <b>multi-model serving</b> capabilities, optimizing resource utilization and cost-efficiency
+                by
+                serving multiple models from a single service.</li>
+        </ul>
+    </div>
+
+    <div class="entry">
+        <div class="flex-row">
+            <span class="company-name">GOOGLE, Mountain View, CA</span>
+            <span class="date-range">May 2017 – Aug 2017</span>
+        </div>
+        <div class="job-title" style="font-weight: normal;">Software Engineering Intern, Ads Quality and Formats</div>
+        <ul>
+            <li>Created pipeline and ensemble logic to combine ad recommendations of various models.</li>
+        </ul>
+    </div>
+
+    <div class="entry">
+        <div class="flex-row">
+            <span class="company-name">CREDIT SUISSE, Mumbai, India</span>
+            <span class="date-range">Jul 2014 – May 2016</span>
+        </div>
+        <div class="job-title" style="font-weight: normal;">Technical Analyst, Prime Services</div>
+        <ul>
+            <li>Established infrastructure to source and compute ticker and communication statistics using Hadoop stack.
+            </li>
+            <li>Explored predictive power of Google Trends for employment rates and consumer-oriented company stocks.
+            </li>
+        </ul>
+    </div>
+
+    <h2>Education</h2>
+
+    <div class="entry">
+        <div class="flex-row">
+            <span class="company-name">PURDUE UNIVERSITY, West Lafayette, IN</span>
+            <span class="date-range">Aug 2016 – Dec 2017</span>
+        </div>
+        <div class="flex-row">
+            <span class="degree-line">Master of Science in Computer Science</span>
+            <span class="gpa">GPA: 3.92 / 4</span>
+        </div>
+        <ul>
+            <li>Coursework: Recommender Systems, Statistical ML, Advanced ML, Data Mining, Optimization, Probability.
+            </li>
+            <li>Teaching Assistant for CS251 - Data Structures and Algorithms (Spring 2017, Fall 2017).</li>
+        </ul>
+    </div>
+
+    <div class="entry">
+        <div class="flex-row">
+            <span class="company-name">VEERMATA JIJABAI TECHNOLOGICAL INSTITUTE (VJTI), Mumbai, India</span>
+            <span class="date-range">Jun 2010 – May 2014</span>
+        </div>
+        <div class="flex-row">
+            <span class="degree-line">Bachelor of Technology in Computer Engineering</span>
+            <span class="gpa">GPA: 3.6 / 4</span>
+        </div>
+    </div>
+
+    <h2>Technical Skills</h2>
+    <div class="skills-row"><span class="skills-label">Languages:</span> Python (Data Science/ML), C++, SQL, Java</div>
+    <div class="skills-row"><span class="skills-label">ML & Data:</span> TensorFlow, BigQuery, Colab</div>
+
+    <h2>Publications & Contributions</h2>
+    <ul>
+        <li><b>Publication:</b> Music Recommendation Based on Subjective Attributes, International Journal of Computer
+            Sciences and Engineering, Vol.3, Issue.10, pp.80-91, 2015.</li>
+        <li><b>Open Source:</b> Contributed to <b>Pandas</b> (Python Data Analysis Library): Fixed rolling negative
+            window bug and enhanced Series class.</li>
+    </ul>
+
+</body>
+
+</html>
