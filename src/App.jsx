@@ -15,7 +15,7 @@ const SCREENS = [
     ],
     [
         "I AM A",
-        "SR. SWE / TECH LEAD %",
+        "SOFTWARE ENGINEER %",
         "AT GOOGLE",
         "IN NEW YORK CITY $"
     ],
