@@ -15,7 +15,7 @@ const SCREENS = [
     ],
     [
         "I AM A",
-        "SOFTWARE ENGINEER %",
+        "SR. SWE / TECH LEAD %",
         "AT GOOGLE",
         "IN NEW YORK CITY $"
     ],
@@ -258,12 +258,10 @@ function getStyle(screenIdx, lineIdx, charIdx) {
 
     // Screen 2: Google
     if (screenIdx === 2) {
-        // Line 1: "SOFTWARE ENGINEER %"
+        // Line 1: "SR. SWE / TECH LEAD %"
         if (lineIdx === 1) {
-            // SOFTWARE (0-7)
-            if (charIdx >= 0 && charIdx <= 7) return '#009688'; // Teal
-            // ENGINEER (9-16)
-            if (charIdx >= 9 && charIdx <= 16) return '#009688'; // Teal
+            // SR. SWE / TECH LEAD (0-18)
+            if (charIdx >= 0 && charIdx <= 18) return '#009688'; // Teal
         }
         // Line 2: "AT GOOGLE"
         if (lineIdx === 2) {
